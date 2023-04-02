@@ -39,7 +39,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
 
 # define model:
-model = ViT_model.ViT(image_size = image_size, patch_size = patch_size, dim = dim, hidden_dim = hidden_dim, numblocks = numblocks)
+model = ViT_model.ViT_Model(image_size = image_size, patch_size = patch_size, dim = dim, hidden_dim = hidden_dim, numblocks = numblocks)
 optimizer = optim.SGD(model.parameters(), lr = 0.01, momentum=0.9)
 starting_epoch = 0
 
