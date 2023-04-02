@@ -18,7 +18,7 @@ from torch.optim.lr_scheduler import MultiStepLR
 
 
 # set hyperparameters and initial conditions
-batch_size = 64
+batch_size = 512
 image_size = (32,32)
 patch_size = (8,8)
 channels = 3
@@ -59,7 +59,6 @@ transform = transforms.Compose(
     [transforms.ToTensor(),
      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-batch_size = 64
 
 trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
                                         download=True, transform=transform)
