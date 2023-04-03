@@ -78,7 +78,6 @@ classes = ('plane', 'car', 'bird', 'cat',
 def train(model, device, epochs, trainloader, testloader, optimizer, start_epoch, verbose = False):
 
     start_time = time.time()
-    optimizer = optimizer.to(device)
     model = model.to(device)    
     criterion = nn.CrossEntropyLoss()
     #lambda1 = lambda epoch: 0.89**(2*epoch)
