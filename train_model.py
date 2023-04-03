@@ -77,63 +77,60 @@ classes = ('plane', 'car', 'bird', 'cat',
 
 
 
-def train(model, device, epochs, trainloader, testloader, optimizer, start_epoch, verbose = False):
+start_time = time.time()
+#model = model.to(device)    
+criterion = nn.CrossEntropyLoss()
+#lambda1 = lambda epoch: 0.89**(2*epoch)
+scheduler = MultiStepLR(optimizer, milestones=[20*n for n in range(1,10)],gamma =0.5)
+train_accs = np.zeros(epochs)
+test_accs = np.zeros(epochs)
+learning_rates = np.zeros(epochs)
 
-    start_time = time.time()
-    #model = model.to(device)    
-    criterion = nn.CrossEntropyLoss()
-    #lambda1 = lambda epoch: 0.89**(2*epoch)
-    scheduler = MultiStepLR(optimizer, milestones=[20*n for n in range(1,10)],gamma =0.5)
-    train_accs = np.zeros(epochs)
-    test_accs = np.zeros(epochs)
-    learning_rates = np.zeros(epochs)
-   
-    for epoch in range(epochs):
-        
-        lr = optimizer.param_groups[0]["lr"]
-        print(f'Learning Rate: {lr}')
-        learning_rates[epoch] = lr
-        train_correct = 0
-        train_total = 0    
-        for batch_idx, (data, target) in enumerate(tqdm(trainloader)):
-            if torch.cuda.is_available():
-                data, target = data.to(device), target.to(device)
-            model.train()
-            optimizer.zero_grad()
-            outputs = model(data)
-            loss = criterion(outputs, target)
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1)
-            optimizer.step()
-            _, preds = torch.max(outputs.data, 1)
-            train_correct += (preds == target).sum().item()
-            train_total += target.size(0)
-            if batch_idx%100 == 0 and verbose:
-                print(f'Loss: {loss.item()}')
-        scheduler.step()
-        test_correct = 0
-        test_total = 0
-        with torch.no_grad():
-            for images, labels in testloader:
-                images, labels = images.to(device), labels.to(device)
-                # calculate outputs by running images through the network
-                model.eval()
-                outputs = model(images)
-                # the class with the highest energy is what we choose as prediction
-                _, predicted = torch.max(outputs.data, 1)
-                test_total += labels.size(0)
-                test_correct += (predicted == labels).sum().item()
-        train_acc, test_acc = train_correct/train_total, test_correct/test_total
-        train_accs[epoch + start_epoch] = train_acc
-        test_accs[epoch + start_epoch] = test_acc
-        '''if epoch >= 2 and False:
-            if test_accs[epoch] - test_accs[epoch-1] < 0.01:
-                lr = lr * 0.75
-                for g in optimizer.param_groups:
-                    g['lr'] = lr'''
-        print(f'Epoch: {epoch + 1 + start_epoch}, Train Acc: {train_acc}, Test Acc: {test_acc}')
-    total_time = time.time() - start_time
-    return train_accs, test_accs, learning_rates
+for epoch in range(epochs):
+    
+    lr = optimizer.param_groups[0]["lr"]
+    print(f'Learning Rate: {lr}')
+    learning_rates[epoch] = lr
+    train_correct = 0
+    train_total = 0    
+    for batch_idx, (data, target) in enumerate(tqdm(trainloader)):
+        if torch.cuda.is_available():
+            data, target = data.to(device), target.to(device)
+        model.train()
+        optimizer.zero_grad()
+        outputs = model(data)
+        loss = criterion(outputs, target)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 1)
+        optimizer.step()
+        _, preds = torch.max(outputs.data, 1)
+        train_correct += (preds == target).sum().item()
+        train_total += target.size(0)
+        if batch_idx%100 == 0:
+            print(f'Loss: {loss.item()}')
+    scheduler.step()
+    test_correct = 0
+    test_total = 0
+    with torch.no_grad():
+        for images, labels in testloader:
+            images, labels = images.to(device), labels.to(device)
+            # calculate outputs by running images through the network
+            model.eval()
+            outputs = model(images)
+            # the class with the highest energy is what we choose as prediction
+            _, predicted = torch.max(outputs.data, 1)
+            test_total += labels.size(0)
+            test_correct += (predicted == labels).sum().item()
+    train_acc, test_acc = train_correct/train_total, test_correct/test_total
+    train_accs[epoch + starting_epoch] = train_acc
+    test_accs[epoch + starting_epoch] = test_acc
+    '''if epoch >= 2 and False:
+        if test_accs[epoch] - test_accs[epoch-1] < 0.01:
+            lr = lr * 0.75
+            for g in optimizer.param_groups:
+                g['lr'] = lr'''
+    print(f'Epoch: {epoch + 1 + starting_epoch}, Train Acc: {train_acc}, Test Acc: {test_acc}')
+total_time = time.time() - start_time
 
 
 training_history = None
@@ -145,7 +142,6 @@ except:
 
 
 
-train_accs, test_accs, info = train(model = model, device = device, epochs = epochs, trainloader = trainloader, testloader = testloader, optimizer = optimizer, start_epoch = starting_epoch)
 df = pd.DataFrame({'train_accs':train_accs, 'test_accs':test_accs})
 
 if training_history is not None:
