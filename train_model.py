@@ -47,13 +47,13 @@ starting_epoch = 0
 try:
    state = torch.load(state_path, map_location = device)
    model.load_state_dict(state['model_state_dict'])
+   starting_epoch = state['epoch']
+   model = model.to(device)
    optimizer = optim.SGD(model.parameters(), lr = initial_lr, momentum=0.9)
    optimizer.load_state_dict(state['optimizer_state_dict'])
-   starting_epoch = state['epoch']
-   model.to(device)
    
 except:
-    model.to(device)
+    model = model.to(device)
     optimizer = optim.SGD(model.parameters(), lr = initial_lr, momentum=0.9)
     print('No state found')
 
