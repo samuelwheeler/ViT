@@ -23,13 +23,13 @@ image_size = (32,32)
 patch_size = (4,4)
 channels = 3
 dim = patch_size[0]*patch_size[1]*channels
-numblocks = 16
+numblocks = 6
 hidden_dim = dim
 heads = 10
 #dropout = 0.1
 state_path = 'ViT_model_state'
 epochs = 200
-initial_lr = 0.1
+initial_lr = 0.0001
 
 
 
@@ -49,12 +49,12 @@ try:
    model.load_state_dict(state['model_state_dict'])
    starting_epoch = state['epoch']
    model = model.to(device)
-   optimizer = optim.SGD(model.parameters(), lr = initial_lr, momentum=0.9)
+   optimizer = optim.Adam(model.parameters(), lr = initial_lr)
    optimizer.load_state_dict(state['optimizer_state_dict'])
    
 except:
     model = model.to(device)
-    optimizer = optim.SGD(model.parameters(), lr = initial_lr, momentum=0.9)
+    optimizer = optim.Adam(model.parameters(), lr = initial_lr)
     print('No state found')
 
 
@@ -85,7 +85,7 @@ start_time = time.time()
 #model = model.to(device)    
 criterion = nn.CrossEntropyLoss()
 #lambda1 = lambda epoch: 0.89**(2*epoch)
-scheduler = MultiStepLR(optimizer, milestones=[20*n for n in range(1,10)],gamma =0.5)
+scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, epochs)
 train_accs = np.zeros(epochs)
 test_accs = np.zeros(epochs)
 learning_rates = np.zeros(epochs)
