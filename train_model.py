@@ -44,7 +44,7 @@ optimizer = optim.SGD(model.parameters(), lr = 0.01, momentum=0.9)
 starting_epoch = 0
 
 try:
-   state = torch.load(state_path)
+   state = torch.load(state_path, map_location = device)
    model.load_state_dict(state['model_state_dict'])
    optimizer.load_state_dict(state['optimizer_state_dict'])
    starting_epoch = state['epoch']
