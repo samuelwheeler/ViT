@@ -23,13 +23,13 @@ image_size = (32,32)
 patch_size = (8,8)
 channels = 3
 dim = patch_size[0]*patch_size[1]*channels
-numblocks = 16
+numblocks = 25
 hidden_dim = dim
 heads = 12
 #dropout = 0.1
 state_path = 'ViT_model_state'
-epochs = 400
-initial_lr = 0.001
+epochs = 200
+initial_lr = 0.1
 
 
 
@@ -112,7 +112,7 @@ for epoch in range(epochs):
         train_total += target.size(0)
         if batch_idx%100 == 0:
             print(f'Loss: {loss.item()}')
-    #scheduler.step()
+    scheduler.step()
     test_correct = 0
     test_total = 0
     with torch.no_grad():
