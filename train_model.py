@@ -48,6 +48,8 @@ try:
    model.load_state_dict(state['model_state_dict'])
    optimizer.load_state_dict(state['optimizer_state_dict'])
    starting_epoch = state['epoch']
+   model.to(device)
+   optimizer.to(device)
 except:
     print('No state found')
 
