@@ -29,6 +29,7 @@ heads = 12
 #dropout = 0.1
 state_path = 'ViT_model_state'
 epochs = 100
+initial_lr = 0.001
 
 
 
@@ -46,14 +47,14 @@ starting_epoch = 0
 try:
    state = torch.load(state_path, map_location = device)
    model.load_state_dict(state['model_state_dict'])
-   optimizer = optim.SGD(model.parameters(), lr = 0.01, momentum=0.9)
+   optimizer = optim.SGD(model.parameters(), lr = initial_lr, momentum=0.9)
    optimizer.load_state_dict(state['optimizer_state_dict'])
    starting_epoch = state['epoch']
    model.to(device)
    
 except:
     model.to(device)
-    optimizer = optim.SGD(model.parameters(), lr = 0.01, momentum=0.9)
+    optimizer = optim.SGD(model.parameters(), lr = initial_lr, momentum=0.9)
     print('No state found')
 
 
@@ -111,7 +112,7 @@ for epoch in range(epochs):
         train_total += target.size(0)
         if batch_idx%100 == 0:
             print(f'Loss: {loss.item()}')
-    scheduler.step()
+    #scheduler.step()
     test_correct = 0
     test_total = 0
     with torch.no_grad():
