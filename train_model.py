@@ -126,8 +126,8 @@ for epoch in range(epochs):
             test_total += labels.size(0)
             test_correct += (predicted == labels).sum().item()
     train_acc, test_acc = train_correct/train_total, test_correct/test_total
-    train_accs[epoch + starting_epoch] = train_acc
-    test_accs[epoch + starting_epoch] = test_acc
+    train_accs[epoch] = train_acc
+    test_accs[epoch] = test_acc
     '''if epoch >= 2 and False:
         if test_accs[epoch] - test_accs[epoch-1] < 0.01:
             lr = lr * 0.75
