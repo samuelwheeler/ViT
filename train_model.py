@@ -138,7 +138,7 @@ try:
     training_history = pd.read_csv('ViT_training_results')
 except:
    training_history = None
-    print('No training history found')
+   print('No training history found')
 
 
 
