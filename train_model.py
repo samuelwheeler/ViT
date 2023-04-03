@@ -40,17 +40,20 @@ print(device)
 
 # define model:
 model = ViT_model.ViT_Model(image_size = image_size, patch_size = patch_size, dim = dim, hidden_dim = hidden_dim, numblocks = numblocks)
-optimizer = optim.SGD(model.parameters(), lr = 0.01, momentum=0.9)
+
 starting_epoch = 0
 
 try:
    state = torch.load(state_path, map_location = device)
    model.load_state_dict(state['model_state_dict'])
+   optimizer = optim.SGD(model.parameters(), lr = 0.01, momentum=0.9)
    optimizer.load_state_dict(state['optimizer_state_dict'])
    starting_epoch = state['epoch']
    model.to(device)
-   optimizer.to(device)
+   
 except:
+    model.to(device)
+    optimizer = optim.SGD(model.parameters(), lr = 0.01, momentum=0.9)
     print('No state found')
 
 
