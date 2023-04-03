@@ -20,12 +20,12 @@ from torch.optim.lr_scheduler import MultiStepLR
 # set hyperparameters and initial conditions
 batch_size = 512
 image_size = (32,32)
-patch_size = (8,8)
+patch_size = (4,4)
 channels = 3
 dim = patch_size[0]*patch_size[1]*channels
-numblocks = 25
+numblocks = 16
 hidden_dim = dim
-heads = 12
+heads = 10
 #dropout = 0.1
 state_path = 'ViT_model_state'
 epochs = 200
