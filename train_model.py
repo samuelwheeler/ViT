@@ -81,7 +81,7 @@ def train(model, device, epochs, trainloader, testloader, optimizer, start_epoch
     model = model.to(device)    
     criterion = nn.CrossEntropyLoss()
     #lambda1 = lambda epoch: 0.89**(2*epoch)
-    scheduler = MultiStepLR(optimizer, milestones=[30, 60, 90, 120, 150, 180, 210, 240, 270, 300],gamma =0.5)
+    scheduler = MultiStepLR(optimizer, milestones=[20*n for n in range(1,10)],gamma =0.5)
     train_accs = np.zeros(epochs)
     test_accs = np.zeros(epochs)
     learning_rates = np.zeros(epochs)
@@ -137,13 +137,13 @@ training_history = None
 try:
     training_history = pd.read_csv('ViT_training_results')
 except:
+   training_history = None
     print('No training history found')
 
 
 
 train_accs, test_accs, info = train(model = model, device = device, epochs = epochs, trainloader = trainloader, testloader = testloader, optimizer = optimizer, start_epoch = starting_epoch)
 df = pd.DataFrame({'train_accs':train_accs, 'test_accs':test_accs})
-df.to_csv(f'./ViT_training_results/ViT_{epochs}_epochs.csv')
 
 if training_history is not None:
     training_history = training_history.append(df).reset_index(drop = True)
